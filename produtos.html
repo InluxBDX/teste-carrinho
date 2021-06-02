@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins" />
+</head>
+<body>
+    <div id="container" style="display:flex; flex-direction: column; align-items: center; max-width: 100%;">
+        <div id="container_btn" class="containerBtn" style="align-items: center;">
+            <button class="btn" type="submit" id="_1" style="width: 230px;margin-bottom: 10px;">Produtos abaixo de 10 reais</button>
+             <button class="btn" id="_2" style="width: 230px;">Produtos acima de 10 reais</button>  
+         </div>
+         <div style="display:flex; flex-direction: column; align-items: center;">
+                <h2>Meu Carrinho</h2>                  
+        </div>
+    </div>
+
+<script>
+function commaInsert(price){
+    if(price.toString().split("").length==2){
+        return "0," + price.toString();
+    }else {
+    var priceParts = price.toString().split(".");
+    priceParts[0] = priceParts[0].replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+    return priceParts.join(".");
+    }
+  }
+                let container = document.createElement('div');
+                let imageContainer = [];
+                let image = [];
+                let price = [];
+                let nameProduct = [];
+                let containerProduct = [];
+                let containerInfo = [];
+                let sellingPrice = [];
+                let containerButton = [];   
+                let containerTotal = [];
+                let buttonFinalizar = document.createElement("button");
+                let containerLine = document.createElement('div');
+                let line = document.createElement("hr");
+                let containerMsg = document.createElement("div");
+                let msg = document.createElement("span");
+
+                msg.textContent = "Parabéns, sua compra tem frete grátis!"
+                containerMsg.appendChild(msg);    
+                containerMsg.setAttribute("class", "containerMsg");                       
+                
+                let a = document.getElementById('container_btn');
+                a.addEventListener('click', (event) => {
+                    var btn_form = event.target || event.srcElement;
+                   
+                    if(btn_form.nodeName==="BUTTON" && btn_form)                   
+                        fetch('http://localhost:3000/api/produtos/?tipo='+btn_form.id           
+                    )
+                .then(response => response.json())
+                .then(data=> {
+                        if(container.childElementCount > 0){                        
+                                container.innerHTML = "";
+                                containerProduct = [];
+                        }
+                        document.getElementById('container').appendChild(container);
+                        container.setAttribute('style', 'display:flex;flex-direction:column;')
+                        container.setAttribute('id', 'containerProduct');
+                        line.setAttribute("class", "line");
+                        containerLine.appendChild(line);
+                        container.appendChild(containerLine);
+                        containerLine.setAttribute("class", "containerLine");
+                        
+                        if(data && data!=undefined && data!=null){
+                                for(i=0;i<data.items.length;i++){                      
+                                            imageContainer[i] = document.createElement('div');
+                                            containerProduct[i] = document.createElement('div');
+                                            containerInfo[i] = document.createElement('div');
+                                            image[i] = document.createElement('img');
+                                            price[i] = document.createElement('span');
+                                            sellingPrice[i] = document.createElement('span');
+                                            nameProduct[i] = document.createElement('span');
+                                            nameProduct[i].setAttribute("class", "productName");
+                                            image[i].setAttribute('src', data.items[i].imageUrl);
+                                            containerInfo[i].setAttribute("class", "product");
+                                            containerProduct[i].setAttribute("class", "containerProduct");
+                                            containerProduct[i].setAttribute("id", "product-id"+"-" +data.items[i].id);
+                                            image[i].setAttribute("class", "imageProduct");
+                                            price[i].textContent = "R$ " +commaInsert(data.items[i].price);
+                                            price[i].setAttribute("class", "priceProduct")
+                                            sellingPrice[i].textContent = "R$ " + commaInsert(data.items[i].sellingPrice);
+                                            nameProduct[i].textContent = data.items[i].name;
+                                            sellingPrice[i].setAttribute("class", "productName");
+                                            imageContainer[i].setAttribute("style", "display:flex");
+                                            imageContainer[i].appendChild(image[i]);
+                                            containerProduct[i].appendChild(imageContainer[i])
+                                            containerInfo[i].appendChild(nameProduct[i]);
+                                            containerInfo[i].appendChild(price[i]);
+                                            containerInfo[i].appendChild(sellingPrice[i]);                   
+                                            containerProduct[i].appendChild(containerInfo[i]);                 
+                                            container.appendChild(containerProduct[i]);   
+                                        }
+                                    
+                                        let totalizador = document.createElement('span');
+                                        let label  = document.createElement('span');
+                                        containerTotal  = document.createElement('div');
+                                        let containerLabel  = document.createElement('div');
+                                        let containerTotalizador  = document.createElement('div');
+                                        containerTotal.setAttribute("class", "containerTotalizador productName");
+                                    
+                                        label.textContent = "Total: "
+                                        totalizador.textContent = "R$" + commaInsert(data.totalizers[0].value);                   
+
+                                        let containerTotalName = document.createElement("div");                            
+                                        containerLabel.appendChild(label);           
+                                        containerTotalizador.appendChild(totalizador);
+                                        let line2 = containerLine.cloneNode(true);                                                
+                                        
+                                        containerTotalName.appendChild(containerLabel);
+                                        containerTotalName.appendChild(containerTotalizador);
+                                        containerTotalName.setAttribute("class", "containerTotalName");
+                                        containerTotal.appendChild(containerTotalName);
+                                        data.totalizers[0].value > 1000 ? containerTotalName.insertAdjacentElement("afterend", containerMsg) : 
+                    
+                                        containerProduct[containerProduct.length-1].insertAdjacentElement("afterend",line2);                     
+                                        containerProduct.push(line2);
+                                        container.appendChild(containerProduct[containerProduct.length-1]);
+
+                                        containerProduct[containerProduct.length-1].insertAdjacentElement("afterend",containerTotal);                     
+                                        containerProduct.push(containerTotal);
+                                        container.appendChild(containerProduct[containerProduct.length-1]);
+
+                                        let containerBtn = document.createElement("div");
+                                        containerBtn.appendChild(buttonFinalizar);
+                                        containerBtn.setAttribute("class", "containerBtn");
+                                        buttonFinalizar.setAttribute("class", "btn");
+                                        buttonFinalizar.textContent = "Finalizar Compra";
+                                        let line3 = containerLine.cloneNode(true);
+                                        container.appendChild( line3);   
+                                        container.appendChild(containerBtn);                                    
+                                    }else{
+                                        document.body.innerHTML = "Houve um problema na requisição!"
+                                    }
+                            })
+                },false);    
+</script>
+
+
+</body>
+</html>
