@@ -27,18 +27,18 @@ app.use('/users', usersRouter);
 //_2 - produtos acima de 10 reais
 
 app.get('/api/produtos/', (req,res,next) => {
-    if(req && req.query.tipo){
-    let tipo = req.query.tipo;  
-    tipo === '_1' ?
-      fs.readFile("abaixo-10-reais.json", (err,data) =>{
-        if(err) res.send({message: "Ocorreu um erro", success:false})
-           res.send(JSON.parse(data))
-          }) : tipo =='_2' ? fs.readFile("acima-10-reais.json", (err,data) =>{
-              if(err) res.send({message: "Ocorreu um erro", success:false})
-             res.send(JSON.parse(data))    
-    }) : res.send({success:false, message: "Não encontrado"}) 
-  }else{
-    res.send({success:false, message: "Requisição não foi enviada!"}) 
+        if(req && req.query.tipo){
+        let tipo = req.query.tipo;  
+        tipo === '_1' ?
+          fs.readFile("abaixo-10-reais.json", (err,data) =>{
+            if(err) res.send({message: "Ocorreu um erro", success:false})
+              res.send(JSON.parse(data))
+              }) : tipo =='_2' ? fs.readFile("acima-10-reais.json", (err,data) =>{
+                  if(err) res.send({message: "Ocorreu um erro", success:false})
+                res.send(JSON.parse(data))    
+        }) : res.send({success:false, message: "Não encontrado"}) 
+      }else{
+        res.send({success:false, message: "Requisição não foi enviada!"}) 
   }
 
 })
