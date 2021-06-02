@@ -10,5 +10,5 @@ Para executar a aplicação, baixar o arquivo ZIP, extrair e navegar até a past
 
 A API estará disponível em http://localhost:3000/api/produtos
 
-O acesso ao carrinho de compras deve ser feito através da página produtos.html.
+O acesso à página **Carrinho de Compras** deve ser feito através da página produtos.html.
 
